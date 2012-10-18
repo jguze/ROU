@@ -1,6 +1,14 @@
-LIBS := -lsfml-system
+UNAME := $(shell uname)
+LINUXLIBS := -lsfml-system
+MACLIBS := -framework sfml-system
 CXX := g++ #gcc
 CXXFLAGS := -g
+
+#Determine if we are on linux or mac
+LIBS := $(MACLIBS)
+ifeq ($(UNAME), Linux)
+LIBS := $(LINUXLIBS)
+endif
 
 all: threading threadBase
 

@@ -1,11 +1,16 @@
 #Example makefile for review purposes with sfml
 
 #State the library used. I think macs work the same way.
-LIBS := -lsfml-system
-
+LINUXLIBS := -lsfml-system
+MACLIBS := -framework sfml-system
 #Choose your compiler
 CXX := g++ #gcc c++
 CXXFLAGS := -g
+
+LIBS := $(MACLIBS)
+ifeq ($(UNAME). Linux)
+LIBS := $(LINUXLIBS)
+endif
 
 #Rules are created so we never compile code if we never changed it
 all: clock
