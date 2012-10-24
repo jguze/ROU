@@ -1,6 +1,6 @@
 UNAME := $(shell uname)
 LINUXLIBS := -lsfml-window -lsfml-system -lGLU -lGL
-MACLIBS := -framework sfml-window -framework sfml-system
+MACLIBS := -framework sfml-window -framework sfml-system -framework OpenGL -framework GLUT
 
 CXX := g++ #gcc c++
 CXXFLAGS := -g
