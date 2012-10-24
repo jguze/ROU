@@ -1,11 +1,11 @@
 #include "Game.h"
 
-void Game::Start(void)
+void Game::Start()
 {
   if(_gameState != Uninitialized)
     return;
 
-  _mainWindow.Create(sf::VideoMode(1024,768,32),"Pang!");
+  _mainWindow.Create(sf::VideoMode(1024,768,32),"Test Game");
   _gameState = Game::Playing;
   
   while(!IsExiting())
@@ -34,7 +34,7 @@ void Game::GameLoop()
     {
       case Game::Playing:
         {
-          _mainWindow.Clear(sf::Color(255,0,0));
+          _mainWindow.Clear(sf::Color(255,255,255));
           _mainWindow.Display();
         
           if(currentEvent.Type == sf::Event::Closed)

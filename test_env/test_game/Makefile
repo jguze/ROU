@@ -13,14 +13,20 @@ endif
 
 all: test_game
 
-Game.o: Game.cpp Game.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+test_game: test_game.o Game.o
+	$(CXX) $(CXXFLAGS) test_game.o Game.o -o $@ $(LIBS)
 
 test_game.o: test_game.cpp Game.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-test_game: test_game.o Game.o
-	$(CXX) $(CXXFLAGS) $< -o $@ $(LIBS)
+Game.o: Game.cpp Game.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+VisibleGameObject.o: VisibleGameObject.cpp VisibleGameObject.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+Player.o: Player.cpp Player.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
 	@echo "Removing garbage files (.o and executable)"
