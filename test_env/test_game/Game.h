@@ -10,8 +10,8 @@ public:
 	static void Start();
 	static sf::RenderWindow& GetWindow();
 	const static sf::Input& GetInput();
-	const static int SCREEN_WIDTH = 1024;
-	const static int SCREEN_HEIGHT = 768;
+	const static int SCREEN_WIDTH = 640;
+	const static int SCREEN_HEIGHT = 640;
 
 private:
 	static bool IsExiting();

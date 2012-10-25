@@ -14,6 +14,9 @@ public:
     float GetVelocity() const;
 
 private:
-    float _velocity;  // -- left ++ right
-    float _maxVelocity;
+    float _xVelocity;  // -- left ++ right
+    float _yVelocity;  // -- left ++ right 
+    int animationCount;
+
+    int animate(int verticalOffset, int i);
 };

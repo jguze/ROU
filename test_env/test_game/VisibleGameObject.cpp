@@ -24,6 +24,7 @@ void VisibleGameObject::Load(std::string filename)
 	{
 		_filename = filename;
 		_sprite.SetImage(_image);
+		_sprite.SetSubRect(sf::IntRect(0, 0, 32, 32));
 		_isLoaded = true;
 	}
 }
@@ -57,7 +58,6 @@ sf::Vector2f VisibleGameObject::GetPosition() const
 	}
 	return sf::Vector2f();
 }
-
 
 sf::Sprite& VisibleGameObject::GetSprite()
 {

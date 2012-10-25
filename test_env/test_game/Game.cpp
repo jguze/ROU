@@ -8,7 +8,7 @@ void Game::Start(void)
 	
 	_mainWindow.Create(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32),"Test Game");
 	
-	//_mainWindow.SetFramerateLimit(60);
+	_mainWindow.SetFramerateLimit(60);
 
 	Player *player1 = new Player();
 	player1->SetPosition((SCREEN_WIDTH/2),(SCREEN_HEIGHT/2));
