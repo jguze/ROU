@@ -57,6 +57,16 @@ void Game::GameLoop()
 			{
 				_mainWindow.Clear(sf::Color(0,0,0));
 
+				sf::Image image;
+				if(image.LoadFromFile("images/BG.png") != true)
+				{
+					return;
+				}
+
+				sf::Sprite sprite(image);
+
+				_mainWindow.Draw(sprite);
+
 				_gameObjectManager.UpdateAll();
 				_gameObjectManager.DrawAll(_mainWindow);
 

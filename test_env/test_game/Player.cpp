@@ -3,6 +3,10 @@
 #include "Game.h"
 #include "GameObjectManager.h"
 
+#define spriteH 32
+#define spriteW 32
+#define walkDelay 15
+#define movementSpeed  150.0f
 
 Player::Player() :
 _xVelocity(0),
@@ -36,11 +40,12 @@ void Player::Update(float elapsedTime)
 
 	if(Game::GetInput().IsKeyDown(sf::Key::Left))
 	{
-		_xVelocity = -150.0f;
-		animationCount = animate(1, animationCount);	} 
+		_xVelocity = -movementSpeed;
+		animationCount = animate(1, animationCount);	
+	} 
 	else if(Game::GetInput().IsKeyDown(sf::Key::Right))
 	{
-		_xVelocity =  150.0f;
+		_xVelocity =  movementSpeed;
 		animationCount = animate(2, animationCount);
 	}
 	else
@@ -50,12 +55,12 @@ void Player::Update(float elapsedTime)
 
 	if(Game::GetInput().IsKeyDown(sf::Key::Up))
 	{
-		_yVelocity = -150.0f;
+		_yVelocity = -movementSpeed;
 		animationCount = animate(3, animationCount);
 	} 
 	else if(Game::GetInput().IsKeyDown(sf::Key::Down))
 	{
-		_yVelocity =  150.0f;
+		_yVelocity =  movementSpeed;
 		animationCount = animate(0, animationCount);
 	}
 	else
@@ -90,10 +95,11 @@ void Player::Update(float elapsedTime)
 	GetSprite().Move(_xVelocity * elapsedTime, _yVelocity * elapsedTime);
 }
 
+/* This is so hacky. Please don't judge me QQ */
 int Player::animate(int verticalOffset, int i) {
-	int j = i / 15;
-	sf::IntRect frame(0, 0, 32, 32);
-	frame.Offset(j*32, verticalOffset*32);
+	int j = i / walkDelay;
+	sf::IntRect frame(0, 0, spriteW, spriteH);
+	frame.Offset(j*spriteW, verticalOffset*spriteH);
 	GetSprite().SetSubRect(sf::IntRect(frame));
-	return (i + 1) % 45;
+	return (i + 1) % (walkDelay * 3);
 }
