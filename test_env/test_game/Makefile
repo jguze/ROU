@@ -13,21 +13,24 @@ endif
 
 all: test_game
 
-test_game: test_game.o Game.o
-	$(CXX) $(CXXFLAGS) test_game.o Game.o -o $@ $(LIBS)
-
-test_game.o: test_game.cpp Game.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
-
-Game.o: Game.cpp Game.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+GameObjectManager.o: GameObjectManager.cpp GameObjectManager.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@ 
 
 VisibleGameObject.o: VisibleGameObject.cpp VisibleGameObject.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-Player.o: Player.cpp Player.h
+Player.o: Player.cpp Player.h VisibleGameObject.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+Game.o: Game.cpp Game.h Player.h GameObjectManager.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+test_game.o: test_game.cpp Game.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@ 
+
+test_game: test_game.o Game.o Player.o VisibleGameObject.o GameObjectManager.o
+	$(CXX) $(CXXFLAGS) test_game.o Game.o Player.o VisibleGameObject.o GameObjectManager.o -o $@ $(LIBS)
 
 clean:
 	@echo "Removing garbage files (.o and executable)"
-	$(RM) using_opengl *.o
+	$(RM) test_game *.o
