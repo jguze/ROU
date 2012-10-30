@@ -113,6 +113,10 @@ void Player::Update(float elapsedTime, Map * map)
 	{
 		SetPosition(pos.x, (Game::SCREEN_HEIGHT + GetSprite().GetSize().y/2)); 
 	}	
+
+	if(Game::GetInput().IsKeyDown(sf::Key::Space)) {
+		SetPosition(Game::SCREEN_WIDTH/2, Game::SCREEN_HEIGHT/2);
+	}
 	
 	/* Move the sprite */
 	GetSprite().Move(_xVelocity * elapsedTime, _yVelocity * elapsedTime);
