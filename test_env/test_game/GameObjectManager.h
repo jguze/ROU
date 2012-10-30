@@ -1,5 +1,6 @@
 #pragma once
 #include "VisibleGameObject.h"
+#include "Map.h"
 
 
 class GameObjectManager
@@ -15,6 +16,8 @@ public:
 
 	void DrawAll(sf::RenderWindow& renderWindow);
 	void UpdateAll();
+
+	Map *map;
 
 private:
 	std::map<std::string, VisibleGameObject*> _gameObjects;

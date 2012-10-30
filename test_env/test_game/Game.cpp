@@ -10,6 +10,8 @@ void Game::Start(void)
 	
 	_mainWindow.SetFramerateLimit(60);
 
+	_mainWindow.Clear(sf::Color(0,0,0));
+
 	Player *player1 = new Player();
 	player1->SetPosition((SCREEN_WIDTH/2),(SCREEN_HEIGHT/2));
 	
@@ -55,17 +57,8 @@ void Game::GameLoop()
 	{
 		case Game::Playing:
 			{
-				_mainWindow.Clear(sf::Color(0,0,0));
 
-				sf::Image image;
-				if(image.LoadFromFile("images/BG.png") != true)
-				{
-					return;
-				}
-
-				sf::Sprite sprite(image);
-
-				_mainWindow.Draw(sprite);
+				_gameObjectManager.map->Draw(_mainWindow);
 
 				_gameObjectManager.UpdateAll();
 				_gameObjectManager.DrawAll(_mainWindow);

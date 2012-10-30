@@ -4,6 +4,7 @@
 
 GameObjectManager::GameObjectManager()
 {
+	map = new Map();
 }
 
 GameObjectManager::~GameObjectManager()

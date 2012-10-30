@@ -20,7 +20,6 @@ animationCount(0)
 
 }
 
-
 Player::~Player()
 {
 }
@@ -33,6 +32,10 @@ void Player::Draw(sf::RenderWindow & rw)
 float Player::GetVelocity() const
 {
 	return _xVelocity;
+}
+
+bool handleCollision(sf::Vector2f &position) {
+
 }
 
 void Player::Update(float elapsedTime)
@@ -69,6 +72,8 @@ void Player::Update(float elapsedTime)
 	}
 
 	sf::Vector2f pos = this->GetPosition();
+
+	//handlePosition(pos);
 
 	/* Wrapping on edge of map */
 

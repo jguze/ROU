@@ -18,5 +18,7 @@ private:
     float _yVelocity;  // -- left ++ right 
     int animationCount;
 
+    bool handleCollision(sf::Vector2f &vf);
+
     int animate(int verticalOffset, int i);
 };
