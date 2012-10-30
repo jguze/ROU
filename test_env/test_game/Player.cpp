@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "Player.h"
 #include "Game.h"
 #include "GameObjectManager.h"
@@ -11,7 +11,8 @@
 Player::Player() :
 _xVelocity(0),
 _yVelocity(0),
-animationCount(0)
+animationCount(0),
+_playerDirection(0)
 {
 	Load("images/Evil.png");
 	assert(IsLoaded());
@@ -34,25 +35,122 @@ float Player::GetVelocity() const
 	return _xVelocity;
 }
 
-bool Player::handleCollision(sf::Vector2f &position, Map *map) {
-	int collidedTileType = map->getCollisionType(position);
-	switch (collidedTileType) {
-		case Map::OPEN_TILE:
-			break;
-		case Map::CLOSED_TILE:
-			_xVelocity  = 0.0f;
-			_yVelocity = 0.0f;
-			break;
-		case Map::UP_DIAGONAL_TILE:
-			if(_yVelocity < 0) {
-				_xVelocity = -_yVelocity;
-			}
-			break;
-		case Map::DOWN_DIAGONAL_TILE:
-			if(_yVelocity < 0) {
-				_xVelocity = _yVelocity;
-			}
-			break;
+void Player::calcDistance(float &distance, Map *map, float FFEdge[], float cheapCleanArray[], int edgeAxes, int j)
+{
+	int collidedTileType;
+	if (edgeAxes == X)
+	{
+		collidedTileType = map->getCollisionType(sf::Vector2f(j*32, cheapCleanArray[!edgeAxes]*32));
+	} else {
+		collidedTileType = map->getCollisionType(sf::Vector2f(cheapCleanArray[!edgeAxes]*32, j * 32));
+	}
+
+	if (collidedTileType == Map::CLOSED_TILE)
+	{
+		float tempDist = abs(FFEdge[edgeAxes] - (j * 32));
+		if (tempDist < distance || distance == -1)
+		{
+			distance = tempDist;
+			std::cout << "Nearest collision tile: " << "| " << cheapCleanArray[!edgeAxes] << " | " << j << " |" << std::endl;
+		}
+	}
+}
+
+float Player::handleCollision(sf::Vector2f position, Map *map) {
+	sf::Vector2f ForwFacingEdge;
+	int edgeAxes;
+	sf::Vector2f intersectingTiles[32];
+
+	if (_playerDirection == UP)
+	{
+		ForwFacingEdge.x = position.x;
+		ForwFacingEdge.y = position.y - 16; //OH SHIT HARD CODED WHAT AN ASSHOLE
+		edgeAxes = Y;
+	} else if (_playerDirection == DOWN) {
+		ForwFacingEdge.x = position.x;
+		ForwFacingEdge.y = position.y + 16;
+		edgeAxes = Y;
+	} else if (_playerDirection == LEFT) {
+		ForwFacingEdge.x = position.x - 16;
+		ForwFacingEdge.y = position.y;
+		edgeAxes = X;
+	} else if (_playerDirection == RIGHT) {
+		ForwFacingEdge.x = position.x + 16; 
+		ForwFacingEdge.y = position.y;
+		edgeAxes = X;
+	} else {
+		//Impossible to get here
+	}
+	std::cout << "FFEdge Coords: " << ForwFacingEdge.x << " : " << ForwFacingEdge.y << std::endl;
+	int length = 0;
+	getIntersectingTiles(intersectingTiles, length, ForwFacingEdge, edgeAxes); // Finds all the tiles that intersect with the FFEdge
+
+	int collidedTileType;
+	float distance = -1;
+	float FFEdge[] = {ForwFacingEdge.x, ForwFacingEdge.y};
+
+	for (int i = 0; i < length; i++)
+	{
+		float cheapCleanArray[] = {intersectingTiles[i].x, intersectingTiles[i].y}; // Shuddap this is a major hack. Intersecting tiles is in xy coords, NOT PIXELS
+		int j = (int) cheapCleanArray[edgeAxes]; // Again, complete hack so I can choose the proper fields by axes without if statements much.
+		if (_playerDirection == UP || _playerDirection == LEFT)
+		{
+			for (; j >= 0; j--)
+				calcDistance(distance, map, FFEdge, cheapCleanArray, edgeAxes, j);
+		} else {
+			for (; j < 20; j++)
+				calcDistance(distance, map, FFEdge, cheapCleanArray, edgeAxes, j);
+		}
+		//std::cout << distance << " : ";
+	}
+	//std::cout << std::endl;
+	return distance;
+
+	// switch (collidedTileType) {
+	// 	case Map::OPEN_TILE:
+	// 		break;
+	// 	case Map::CLOSED_TILE:
+	// 		_xVelocity  = 0.0f;
+	// 		_yVelocity = 0.0f;
+	// 		break;
+	// 	case Map::UP_DIAGONAL_TILE:
+	// 		if(_yVelocity < 0) {
+	// 			_xVelocity = -_yVelocity;
+	// 		}
+	// 		break;
+	// 	case Map::DOWN_DIAGONAL_TILE:
+	// 		if(_yVelocity < 0) {
+	// 			_xVelocity = _yVelocity;
+	// 		}
+	// 		break;
+	// }
+}
+
+void Player::getIntersectingTiles(sf::Vector2f InterTiles[], int &length, sf::Vector2f FFEdge, int edgeAxes)
+{
+	int minTile;
+	int maxTile;
+
+	if (edgeAxes == X)
+	{
+		minTile = (int) ((FFEdge.y - 8) / 32); // DAFUQ JUSTIN MAKE USE THE TILE CONSTANTS
+		maxTile = (int) ((FFEdge.y + 8) / 32);
+	} else {
+		minTile = (int) ((FFEdge.x - 8) / 32);
+		maxTile = (int) ((FFEdge.x + 8) / 32);
+	}
+
+	int tile = minTile;
+	for (length = 0; tile < maxTile + 1; tile++, length++)
+	{
+		if (edgeAxes == X)
+		{
+			sf::Vector2f v(FFEdge.x / 32, tile);
+			InterTiles[length] = v;
+		} else {
+			sf::Vector2f v(tile, FFEdge.y / 32);
+			InterTiles[length] = v;
+		}
 	}
 }
 
@@ -61,12 +159,14 @@ void Player::Update(float elapsedTime, Map * map)
 	if(Game::GetInput().IsKeyDown(sf::Key::Left))
 	{
 		_xVelocity = -movementSpeed;
-		animationCount = animate(1, animationCount);	
+		_playerDirection = LEFT;
+		animationCount = animate(LEFT, animationCount);	
 	} 
 	else if(Game::GetInput().IsKeyDown(sf::Key::Right))
 	{
 		_xVelocity =  movementSpeed;
-		animationCount = animate(2, animationCount);
+		_playerDirection = RIGHT;
+		animationCount = animate(RIGHT, animationCount);
 	}
 	else
 	{
@@ -76,12 +176,14 @@ void Player::Update(float elapsedTime, Map * map)
 	if(Game::GetInput().IsKeyDown(sf::Key::Up))
 	{
 		_yVelocity = -movementSpeed;
-		animationCount = animate(3, animationCount);
+		_playerDirection = UP;
+		animationCount = animate(UP, animationCount);
 	} 
 	else if(Game::GetInput().IsKeyDown(sf::Key::Down))
 	{
 		_yVelocity =  movementSpeed;
-		animationCount = animate(0, animationCount);
+		_playerDirection = DOWN;
+		animationCount = animate(DOWN, animationCount);
 	}
 	else
 	{
@@ -90,7 +192,7 @@ void Player::Update(float elapsedTime, Map * map)
 
 	sf::Vector2f pos = this->GetPosition();
 
-	handleCollision(pos, map);
+	float distToCollision = handleCollision(pos, map);
 
 	/* Wrapping on edge of map */
 
@@ -119,7 +221,19 @@ void Player::Update(float elapsedTime, Map * map)
 	}
 	
 	/* Move the sprite */
-	GetSprite().Move(_xVelocity * elapsedTime, _yVelocity * elapsedTime);
+	//std::cout << distToCollision << std::endl;
+	std::cout << "DISTANCETOSOLID: " << distToCollision << std::endl;
+	if (distToCollision == -1) 
+	{
+		GetSprite().Move(_xVelocity * elapsedTime, _yVelocity * elapsedTime);
+	} else {
+		if (_playerDirection == UP || _playerDirection == DOWN)
+		{
+			GetSprite().Move(_xVelocity * elapsedTime, std::min(distToCollision, _yVelocity * elapsedTime));
+		} else {
+			GetSprite().Move(std::min(distToCollision, _xVelocity * elapsedTime),  _yVelocity * elapsedTime);
+		}
+	}
 }
 
 /* This is so hacky. Please don't judge me QQ */

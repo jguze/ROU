@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+#include "stdafx.h"
 #include "Map.h"
 #include <fstream>
 #include <iostream>
