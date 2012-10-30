@@ -22,7 +22,7 @@ GameObjectManager.o: GameObjectManager.cpp GameObjectManager.h
 VisibleGameObject.o: VisibleGameObject.cpp VisibleGameObject.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-Player.o: Player.cpp Player.h VisibleGameObject.h
+Player.o: Player.cpp Player.h VisibleGameObject.h Map.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 Game.o: Game.cpp Game.h Player.h GameObjectManager.h Map.h

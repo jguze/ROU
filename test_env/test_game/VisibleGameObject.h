@@ -1,4 +1,6 @@
 #pragma once
+#include "Map.h"
+
 class VisibleGameObject
 {
 public:
@@ -7,7 +9,7 @@ public:
 	
 	virtual void Load(std::string filename);
 	virtual void Draw(sf::RenderWindow & window);
-	virtual void Update(float elapsedTime);
+	virtual void Update(float elapsedTime, Map *map);
 
 	virtual void SetPosition(float x, float y);
 	virtual sf::Vector2f GetPosition() const;

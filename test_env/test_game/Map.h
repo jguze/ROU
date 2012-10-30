@@ -9,7 +9,12 @@ public:
 	void Load(std::string);
 	void initializeCollisionMap();
 
-	float getCollisionType(sf::Vector2f);
+	const static int OPEN_TILE = 0;
+	const static int CLOSED_TILE = 1;
+	const static int UP_DIAGONAL_TILE = 2;
+	const static int DOWN_DIAGONAL_TILE = 3;
+
+	int getCollisionType(sf::Vector2f map);
 
 private:
 	sf::Sprite _background;

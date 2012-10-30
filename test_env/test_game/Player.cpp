@@ -34,13 +34,30 @@ float Player::GetVelocity() const
 	return _xVelocity;
 }
 
-bool handleCollision(sf::Vector2f &position) {
-
+bool Player::handleCollision(sf::Vector2f &position, Map *map) {
+	int collidedTileType = map->getCollisionType(position);
+	switch (collidedTileType) {
+		case Map::OPEN_TILE:
+			break;
+		case Map::CLOSED_TILE:
+			_xVelocity = 0;
+			_yVelocity = 0;
+			break;
+		case Map::UP_DIAGONAL_TILE:
+			if(_yVelocity < 0) {
+				_xVelocity = -_yVelocity;
+			}
+			break;
+		case Map::DOWN_DIAGONAL_TILE:
+			if(_yVelocity > 0) {
+				_xVelocity = -_yVelocity;
+			}
+			break;
+	}
 }
 
-void Player::Update(float elapsedTime)
+void Player::Update(float elapsedTime, Map * map)
 {
-
 	if(Game::GetInput().IsKeyDown(sf::Key::Left))
 	{
 		_xVelocity = -movementSpeed;
@@ -73,7 +90,7 @@ void Player::Update(float elapsedTime)
 
 	sf::Vector2f pos = this->GetPosition();
 
-	//handlePosition(pos);
+	handleCollision(pos, map);
 
 	/* Wrapping on edge of map */
 
@@ -97,6 +114,7 @@ void Player::Update(float elapsedTime)
 		SetPosition(pos.x, (Game::SCREEN_HEIGHT + GetSprite().GetSize().y/2)); 
 	}	
 	
+	/* Move the sprite */
 	GetSprite().Move(_xVelocity * elapsedTime, _yVelocity * elapsedTime);
 }
 

@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 #include "VisibleGameObject.h"
 
-
 VisibleGameObject::VisibleGameObject() :
 _isLoaded(false)
 {
@@ -38,7 +37,7 @@ void VisibleGameObject::Draw(sf::RenderWindow & renderWindow)
 }
 
 
-void VisibleGameObject::Update(float elapsedTime)
+void VisibleGameObject::Update(float elapsedTime, Map *map)
 {
 }
 

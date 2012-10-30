@@ -60,7 +60,7 @@ void GameObjectManager::UpdateAll()
 
 	while(itr != _gameObjects.end())
 	{
-		itr->second->Update(timeDelta);
+		itr->second->Update(timeDelta, map);
 		itr++;
 	}
 	

@@ -6,6 +6,8 @@
 
 #define mapWidth 20
 #define mapHeight 20
+#define spriteH 32
+#define spriteW 32
 
 int collision[mapWidth][mapHeight];
 
@@ -23,6 +25,10 @@ void Map::Load(std::string filename)
 void Map::Draw(sf::RenderWindow& renderWindow)
 {
 	renderWindow.Draw(_background);
+}
+
+int Map::getCollisionType(sf::Vector2f currentPosition){
+	return collision[(int)(currentPosition.x/spriteW)][(int)(currentPosition.y/spriteH)];
 }
 
 void Map::initializeCollisionMap() {
