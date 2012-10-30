@@ -40,8 +40,8 @@ bool Player::handleCollision(sf::Vector2f &position, Map *map) {
 		case Map::OPEN_TILE:
 			break;
 		case Map::CLOSED_TILE:
-			_xVelocity  = 0;
-			_yVelocity = 0;
+			_xVelocity  = 0.0f;
+			_yVelocity = 0.0f;
 			break;
 		case Map::UP_DIAGONAL_TILE:
 			if(_yVelocity < 0) {
@@ -49,8 +49,8 @@ bool Player::handleCollision(sf::Vector2f &position, Map *map) {
 			}
 			break;
 		case Map::DOWN_DIAGONAL_TILE:
-			if(_yVelocity > 0) {
-				_xVelocity = -_yVelocity;
+			if(_yVelocity < 0) {
+				_xVelocity = _yVelocity;
 			}
 			break;
 	}

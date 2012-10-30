@@ -12,7 +12,7 @@
 int collision[mapWidth][mapHeight];
 
 Map::Map() {
-	Load("images/BG.png");
+	Load("images/BGM.png");
 	initializeCollisionMap();
 }
 
