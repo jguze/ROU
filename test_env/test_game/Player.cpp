@@ -47,8 +47,8 @@ void Player::calcDistance(float &distance, Map *map, float FFEdge[], float cheap
 
 	if (collidedTileType == Map::CLOSED_TILE)
 	{
-		float tempDist = abs(FFEdge[edgeAxes] - (j * 32));
-		if (tempDist < distance || distance == -1)
+		float tempDist = abs(FFEdge[edgeAxes] - (j * 32)) - (_playerDirection == UP || _playerDirection == LEFT ? 32 : 0);
+		if (tempDist < distance || distance <= -1)
 		{
 			distance = tempDist;
 			std::cout << "Nearest collision tile: " << "| " << cheapCleanArray[!edgeAxes] << " | " << j << " |" << std::endl;
@@ -96,7 +96,7 @@ float Player::handleCollision(sf::Vector2f position, Map *map) {
 		if (_playerDirection == UP || _playerDirection == LEFT)
 		{
 			for (; j >= 0; j--)
-				calcDistance(distance, map, FFEdge, cheapCleanArray, edgeAxes, j);
+				calcDistance(distance, map, FFEdge, cheapCleanArray, edgeAxes, j);		
 		} else {
 			for (; j < 20; j++)
 				calcDistance(distance, map, FFEdge, cheapCleanArray, edgeAxes, j);
@@ -133,11 +133,11 @@ void Player::getIntersectingTiles(sf::Vector2f InterTiles[], int &length, sf::Ve
 
 	if (edgeAxes == X)
 	{
-		minTile = (int) ((FFEdge.y - 8) / 32); // DAFUQ JUSTIN MAKE USE THE TILE CONSTANTS
-		maxTile = (int) ((FFEdge.y + 8) / 32);
+		minTile = (int) ((FFEdge.y - 16) / 32); // DAFUQ JUSTIN MAKE USE THE TILE CONSTANTS
+		maxTile = (int) ((FFEdge.y + 16) / 32);
 	} else {
-		minTile = (int) ((FFEdge.x - 8) / 32);
-		maxTile = (int) ((FFEdge.x + 8) / 32);
+		minTile = (int) ((FFEdge.x - 16) / 32);
+		maxTile = (int) ((FFEdge.x + 16) / 32);
 	}
 
 	int tile = minTile;
@@ -227,12 +227,17 @@ void Player::Update(float elapsedTime, Map * map)
 	{
 		GetSprite().Move(_xVelocity * elapsedTime, _yVelocity * elapsedTime);
 	} else {
+		std::cout << "Collision Ahead" << std::endl;
+		float finXDist = _xVelocity * elapsedTime;
+		float finYDist = _yVelocity * elapsedTime;
 		if (_playerDirection == UP || _playerDirection == DOWN)
 		{
-			GetSprite().Move(_xVelocity * elapsedTime, std::min(distToCollision, _yVelocity * elapsedTime));
+			finYDist = std::abs(_yVelocity * elapsedTime) < distToCollision ? _yVelocity * elapsedTime : (_playerDirection == UP ? 1 : -1) * distToCollision;
 		} else {
-			GetSprite().Move(std::min(distToCollision, _xVelocity * elapsedTime),  _yVelocity * elapsedTime);
+			finXDist = std::abs(_xVelocity * elapsedTime) < distToCollision ? _xVelocity * elapsedTime : (_playerDirection == RIGHT ? 1 : -1) * distToCollision;
 		}
+		std::cout << "XD: " << finXDist << " YD: " << finYDist << std::endl;
+		GetSprite().Move(finXDist, finYDist);
 	}
 }
 
