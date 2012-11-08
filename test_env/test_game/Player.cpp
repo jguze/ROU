@@ -76,7 +76,7 @@ void Player::calcDistance(float &distance, Map *map, float FFEdge[], float cheap
 		if (tempDist < distance || distance <= -1)
 		{
 			distance = tempDist;
-			std::cout << "Nearest collision tile: " << "| " << cheapCleanArray[!edgeAxes] << " | " << j << " |" << std::endl;
+			//std::cout << "Nearest collision tile: " << "| " << cheapCleanArray[!edgeAxes] << " | " << j << " |" << std::endl;
 		}
 	}
 }
@@ -106,7 +106,7 @@ float Player::handleCollision(sf::Vector2f position, Map *map) {
 	} else {
 		//Impossible to get here
 	}
-	std::cout << "FFEdge Coords: " << ForwFacingEdge.x << " : " << ForwFacingEdge.y << std::endl;
+	//std::cout << "FFEdge Coords: " << ForwFacingEdge.x << " : " << ForwFacingEdge.y << std::endl;
 	int length = 0;
 	getIntersectingTiles(intersectingTiles, length, ForwFacingEdge, edgeAxes); // Finds all the tiles that intersect with the FFEdge
 
@@ -250,13 +250,13 @@ void Player::Update(float elapsedTime, Map * map)
 		
 		/* Move the sprite */
 		//std::cout << distToCollision << std::endl;
-		std::cout << "DISTANCETOSOLID: " << distToCollision << std::endl;
+		//std::cout << "DISTANCETOSOLID: " << distToCollision << std::endl;
 		if (distToCollision == -1) 
 		{
 			GetSprite().Move(_xVelocity * elapsedTime, _yVelocity * elapsedTime);
 
 		} else {
-			std::cout << "Collision Ahead" << std::endl;
+			//std::cout << "Collision Ahead" << std::endl;
 			float finXDist = _xVelocity * elapsedTime;
 			float finYDist = _yVelocity * elapsedTime;
 
@@ -266,7 +266,7 @@ void Player::Update(float elapsedTime, Map * map)
 			} else {
 				finXDist = std::abs(_xVelocity * elapsedTime) < distToCollision ? _xVelocity * elapsedTime : (_playerDirection == RIGHT ? 1 : -1) * distToCollision;
 			}
-			std::cout << "XD: " << finXDist << " YD: " << finYDist << std::endl;
+			//std::cout << "XD: " << finXDist << " YD: " << finYDist << std::endl;
 			GetSprite().Move(finXDist, finYDist);
 		}
 

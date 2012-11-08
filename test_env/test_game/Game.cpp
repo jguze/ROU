@@ -15,7 +15,6 @@ void Game::RunServer() {
 
 void Game::RunClient() {
 	sf::IPAddress ServerAddress = sf::IPAddress(SERVER_IP);
-
 	if(!Client.Connect(PORT, ServerAddress))
 		return;
 
