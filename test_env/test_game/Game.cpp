@@ -1,10 +1,6 @@
 #include "stdafx.h"
 #include "Game.h"
 
-sf::Packet& operator >> (sf::Packet& Packet, Player::PlayerData& C) {
-	return Packet >> C.id >> C.xPos >> C.yPos >> C.action;
-}
-
 void Game::RunServer() {
 	if(!Server.Listen(PORT))
 		return;
@@ -50,8 +46,8 @@ void Game::Start(void)
 	Player *player1 = new Player(CLIENT);
 	player1->SetPosition((SCREEN_WIDTH/2),(SCREEN_HEIGHT/3));	
 	
-	_gameObjectManager.Add("Player",player);
-	_gameObjectManager.Add("Player1",player1);
+	_gameObjectManager.Add("Server",player);
+	_gameObjectManager.Add("Client",player1);
 
 	_gameState= Game::Playing;
 
@@ -98,15 +94,34 @@ void Game::GetServerResponse() {
 }
 
 void Game::ProcessClientResponse() {
-	sf::Packet Packet;
+	sf::Packet Incoming;
+	sf::Packet Outgoing;
+	Player::PlayerData pd;
 
-	if(Server.Receive(Packet)) {
+	if(Server.Receive(Incoming)) {
 		std::cout << "Receiving Error!";
 		return;
 	}
 
+	Incoming >> pd.id >> pd.xPos >> pd.yPos >> pd.action;
+
+	// Moving client's player
+	Player * modified = (Player *)_gameObjectManager.Get(pd.id);
+	modified->MovePlayer(pd.xPos, pd.yPos);
+
+	Player * serverPlayer = (Player*)_gameObjectManager.Get("Server");
+
+	sf::Vector2f pos = serverPlayer->GetPosition();
+
+	pd.id = "Server";
+	pd.xPos = pos.x;
+	pd.yPos = pos.y;
+	pd.action = 0;
+
+	Outgoing << pd.id << pd.xPos << pd.yPos << pd.action;
+
 	// Server validation would take place here, but for now, we'll cheat and simply send it back
-	Server.Send(Packet); // This should be processed by GetServerResponse on the client end.
+	Server.Send(Outgoing); // This should be processed by GetServerResponse on the client end.
 }
 
 void Game::GameLoop()

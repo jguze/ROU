@@ -48,7 +48,6 @@ void Player::SendNetworkRequest(PlayerData pd) {
 	sf::Packet Packet;
 
 	Packet << pd;
-	std::cout << "LOL";
 	Game::Client.Send(Packet);
 	std::cout << "\nPlayer: " << pd.id << " xPos: " << pd.xPos << " yPos: " << pd.yPos << " action: " << pd.action << "\n";
 }
@@ -274,7 +273,7 @@ void Player::Update(float elapsedTime, Map * map)
 		data.action = 0;
 
 		if(CLIENT) {
-			data.id = "Player1"; // TODO don't hard code this shit
+			data.id = "Client"; // TODO don't hard code this shit
 			SendNetworkRequest(data);
 		}	
 	}

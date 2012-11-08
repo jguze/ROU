@@ -7,7 +7,9 @@
 
 class Game
 {
+
 public:
+
 	static void Start();
 	static sf::RenderWindow& GetWindow();
 	const static sf::Input& GetInput();
