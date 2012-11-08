@@ -83,7 +83,7 @@ void Game::GetServerResponse() {
 	Player::PlayerData pd;
 
 	if(Client.Receive(Packet)) {
-		std::cout << "Receiving Error!";
+		std::cout << "GetServerResponse";
 		return;
 	}
 
@@ -99,7 +99,7 @@ void Game::ProcessClientResponse() {
 	Player::PlayerData pd;
 
 	if(Server.Receive(Incoming)) {
-		std::cout << "Receiving Error!";
+		std::cout << "ProcessClientResponse";
 		return;
 	}
 

@@ -23,5 +23,5 @@
 #define SERVER_IP "198.84.206.189"
 #define PORT 2044
 
-#define SERVER false
-#define CLIENT true
+#define SERVER true
+#define CLIENT false

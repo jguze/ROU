@@ -42,8 +42,10 @@ void Player::MovePlayer(float x, float y) {
 
 void Player::SendNetworkRequest(PlayerData pd) {
 	sf::IPAddress ServerAddress = sf::IPAddress(SERVER_IP);
-	if(!Game::Client.Connect(PORT, ServerAddress))
+	if(!Game::Client.Connect(PORT, ServerAddress)) {
+		std::cout << "SendNetworkRequest";
 		return;
+	}
 
 	sf::Packet Packet;
 
