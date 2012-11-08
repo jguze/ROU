@@ -8,7 +8,11 @@
 #define walkDelay 15
 #define movementSpeed  150.0f
 
-Player::Player() :
+sf::Packet& operator << (sf::Packet& Packet, const Player::PlayerData& C) {
+	return Packet << C.id << C.xPos << C.yPos << C.action;
+}
+
+Player::Player(bool c) :
 _xVelocity(0),
 _yVelocity(0),
 animationCount(0),
@@ -16,6 +20,8 @@ _playerDirection(0)
 {
 	Load("images/Evil.png");
 	assert(IsLoaded());
+
+	controllable = c;
 
 	GetSprite().SetCenter(GetSprite().GetSize().x /2, GetSprite().GetSize().y / 2);
 
@@ -29,6 +35,24 @@ void Player::Draw(sf::RenderWindow & rw)
 {
 	VisibleGameObject::Draw(rw);
 }
+
+void Player::MovePlayer(float x, float y) {
+	GetSprite().Move(x, y);
+}
+
+void Player::SendNetworkRequest(PlayerData pd) {
+	sf::IPAddress ServerAddress = sf::IPAddress(SERVER_IP);
+	if(!Game::Client.Connect(PORT, ServerAddress))
+		return;
+
+	sf::Packet Packet;
+
+	Packet << pd;
+	std::cout << "LOL";
+	Game::Client.Send(Packet);
+	std::cout << "\nPlayer: " << pd.id << " xPos: " << pd.xPos << " yPos: " << pd.yPos << " action: " << pd.action << "\n";
+}
+
 
 float Player::GetVelocity() const
 {
@@ -156,88 +180,103 @@ void Player::getIntersectingTiles(sf::Vector2f InterTiles[], int &length, sf::Ve
 
 void Player::Update(float elapsedTime, Map * map)
 {
-	if(Game::GetInput().IsKeyDown(sf::Key::Left))
-	{
-		_xVelocity = -movementSpeed;
-		_playerDirection = LEFT;
-		animationCount = animate(LEFT, animationCount);	
-	} 
-	else if(Game::GetInput().IsKeyDown(sf::Key::Right))
-	{
-		_xVelocity =  movementSpeed;
-		_playerDirection = RIGHT;
-		animationCount = animate(RIGHT, animationCount);
-	}
-	else
-	{
-		_xVelocity = 0.0f;
-	}
+	if(controllable == true) {
+		PlayerData data;
 
-	if(Game::GetInput().IsKeyDown(sf::Key::Up))
-	{
-		_yVelocity = -movementSpeed;
-		_playerDirection = UP;
-		animationCount = animate(UP, animationCount);
-	} 
-	else if(Game::GetInput().IsKeyDown(sf::Key::Down))
-	{
-		_yVelocity =  movementSpeed;
-		_playerDirection = DOWN;
-		animationCount = animate(DOWN, animationCount);
-	}
-	else
-	{
-		_yVelocity = 0.0f;
-	}
-
-	sf::Vector2f pos = this->GetPosition();
-
-	float distToCollision = handleCollision(pos, map);
-
-	/* Wrapping on edge of map */
-
-	if(pos.x > Game::SCREEN_WIDTH + GetSprite().GetSize().x/2 && Game::GetInput().IsKeyDown(sf::Key::Right))
-	{
-		SetPosition((0 - GetSprite().GetSize().x/2), pos.y); 
-	}
-
-	if(pos.x  < 0 - GetSprite().GetSize().x/2  && Game::GetInput().IsKeyDown(sf::Key::Left))
-	{
-		SetPosition((Game::SCREEN_WIDTH + GetSprite().GetSize().x/2), pos.y);
-	}
-
-	if(pos.y > Game::SCREEN_HEIGHT + GetSprite().GetSize().y/2 && Game::GetInput().IsKeyDown(sf::Key::Down))
-	{
-		SetPosition(pos.x, (0 - GetSprite().GetSize().y/2));
-	}
-
-	if(pos.y < 0 - GetSprite().GetSize().y/2  && Game::GetInput().IsKeyDown(sf::Key::Up))
-	{
-		SetPosition(pos.x, (Game::SCREEN_HEIGHT + GetSprite().GetSize().y/2)); 
-	}	
-
-	if(Game::GetInput().IsKeyDown(sf::Key::Space)) {
-		SetPosition(Game::SCREEN_WIDTH/2, Game::SCREEN_HEIGHT/2);
-	}
-	
-	/* Move the sprite */
-	//std::cout << distToCollision << std::endl;
-	std::cout << "DISTANCETOSOLID: " << distToCollision << std::endl;
-	if (distToCollision == -1) 
-	{
-		GetSprite().Move(_xVelocity * elapsedTime, _yVelocity * elapsedTime);
-	} else {
-		std::cout << "Collision Ahead" << std::endl;
-		float finXDist = _xVelocity * elapsedTime;
-		float finYDist = _yVelocity * elapsedTime;
-		if (_playerDirection == UP || _playerDirection == DOWN)
+		if(Game::GetInput().IsKeyDown(sf::Key::Left))
 		{
-			finYDist = std::abs(_yVelocity * elapsedTime) < distToCollision ? _yVelocity * elapsedTime : (_playerDirection == UP ? 1 : -1) * distToCollision;
-		} else {
-			finXDist = std::abs(_xVelocity * elapsedTime) < distToCollision ? _xVelocity * elapsedTime : (_playerDirection == RIGHT ? 1 : -1) * distToCollision;
+			_xVelocity = -movementSpeed;
+			_playerDirection = LEFT;
+			animationCount = animate(LEFT, animationCount);	
+		} 
+		else if(Game::GetInput().IsKeyDown(sf::Key::Right))
+		{
+			_xVelocity =  movementSpeed;
+			_playerDirection = RIGHT;
+			animationCount = animate(RIGHT, animationCount);
 		}
-		std::cout << "XD: " << finXDist << " YD: " << finYDist << std::endl;
-		GetSprite().Move(finXDist, finYDist);
+		else
+		{
+			_xVelocity = 0.0f;
+		}
+
+		if(Game::GetInput().IsKeyDown(sf::Key::Up))
+		{
+			_yVelocity = -movementSpeed;
+			_playerDirection = UP;
+			animationCount = animate(UP, animationCount);
+		} 
+		else if(Game::GetInput().IsKeyDown(sf::Key::Down))
+		{
+			_yVelocity =  movementSpeed;
+			_playerDirection = DOWN;
+			animationCount = animate(DOWN, animationCount);
+		}
+		else
+		{
+			_yVelocity = 0.0f;
+		}
+
+		sf::Vector2f pos = this->GetPosition();
+
+		float distToCollision = handleCollision(pos, map);
+
+		/* Wrapping on edge of map */
+
+		if(pos.x > Game::SCREEN_WIDTH + GetSprite().GetSize().x/2 && Game::GetInput().IsKeyDown(sf::Key::Right))
+		{
+			SetPosition((0 - GetSprite().GetSize().x/2), pos.y); 
+		}
+
+		if(pos.x  < 0 - GetSprite().GetSize().x/2  && Game::GetInput().IsKeyDown(sf::Key::Left))
+		{
+			SetPosition((Game::SCREEN_WIDTH + GetSprite().GetSize().x/2), pos.y);
+		}
+
+		if(pos.y > Game::SCREEN_HEIGHT + GetSprite().GetSize().y/2 && Game::GetInput().IsKeyDown(sf::Key::Down))
+		{
+			SetPosition(pos.x, (0 - GetSprite().GetSize().y/2));
+		}
+
+		if(pos.y < 0 - GetSprite().GetSize().y/2  && Game::GetInput().IsKeyDown(sf::Key::Up))
+		{
+			SetPosition(pos.x, (Game::SCREEN_HEIGHT + GetSprite().GetSize().y/2)); 
+		}	
+
+		if(Game::GetInput().IsKeyDown(sf::Key::Space)) {
+			SetPosition(Game::SCREEN_WIDTH/2, Game::SCREEN_HEIGHT/2);
+		}
+		
+		/* Move the sprite */
+		//std::cout << distToCollision << std::endl;
+		std::cout << "DISTANCETOSOLID: " << distToCollision << std::endl;
+		if (distToCollision == -1) 
+		{
+			GetSprite().Move(_xVelocity * elapsedTime, _yVelocity * elapsedTime);
+
+		} else {
+			std::cout << "Collision Ahead" << std::endl;
+			float finXDist = _xVelocity * elapsedTime;
+			float finYDist = _yVelocity * elapsedTime;
+
+			if (_playerDirection == UP || _playerDirection == DOWN)
+			{
+				finYDist = std::abs(_yVelocity * elapsedTime) < distToCollision ? _yVelocity * elapsedTime : (_playerDirection == UP ? 1 : -1) * distToCollision;
+			} else {
+				finXDist = std::abs(_xVelocity * elapsedTime) < distToCollision ? _xVelocity * elapsedTime : (_playerDirection == RIGHT ? 1 : -1) * distToCollision;
+			}
+			std::cout << "XD: " << finXDist << " YD: " << finYDist << std::endl;
+			GetSprite().Move(finXDist, finYDist);
+		}
+
+		data.xPos = pos.x;
+		data.yPos = pos.y;
+		data.action = 0;
+
+		if(CLIENT) {
+			data.id = "Player1"; // TODO don't hard code this shit
+			SendNetworkRequest(data);
+		}	
 	}
 }
 

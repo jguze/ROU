@@ -1,6 +1,7 @@
 #pragma once
 #include "VisibleGameObject.h"
 #include "Map.h"
+#include "stdafx.h"
 
 #define DOWN    0
 #define LEFT    1
@@ -14,7 +15,7 @@ class Player :
 	public VisibleGameObject
 {
 public:
-	Player();
+	Player(bool controllable);
 	~Player();
 
 	void Update(float elapsedTime, Map * m);
@@ -22,7 +23,26 @@ public:
     
     float GetVelocity() const;
 
+    struct PlayerData {
+
+        std::string id;
+
+        float xPos;
+        float yPos;
+
+        int action;
+    };
+
+    void SendNetworkRequest(PlayerData pd);
+
+    void MovePlayer(float x, float y);
+
 private:
+
+    sf::SocketTCP Sender;
+
+    bool controllable;
+
     float _xVelocity;  // -- left ++ right
     float _yVelocity;  // -- left ++ right 
     int animationCount;

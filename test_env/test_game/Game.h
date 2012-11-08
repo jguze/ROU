@@ -14,9 +14,18 @@ public:
 	const static int SCREEN_WIDTH = 640;
 	const static int SCREEN_HEIGHT = 640;
 
+	static sf::SocketTCP Client;
+	static sf::SocketTCP Server;
+
 private:
 	static bool IsExiting();
 	static void GameLoop();
+
+	static void GetServerResponse();
+	static void ProcessClientResponse();
+
+	static void RunServer();
+	static void RunClient();
 
 	enum GameState { Uninitialized, Playing, Exiting };
 

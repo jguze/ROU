@@ -1,10 +1,41 @@
 #include "stdafx.h"
 #include "Game.h"
 
+sf::Packet& operator >> (sf::Packet& Packet, Player::PlayerData& C) {
+	return Packet >> C.id >> C.xPos >> C.yPos >> C.action;
+}
+
+void Game::RunServer() {
+	if(!Server.Listen(PORT))
+		return;
+
+	std::cout << "Server is listening to port " << PORT << ", waiting for connections... " << std::endl;
+
+	// Wait for connections
+	sf::IPAddress ClientAddress;
+	Server.Accept(Client, &ClientAddress);
+	std::cout << "Client connected: " << ClientAddress << "\n";
+}
+
+void Game::RunClient() {
+	sf::IPAddress ServerAddress = sf::IPAddress(SERVER_IP);
+
+	if(!Client.Connect(PORT, ServerAddress))
+		return;
+
+	std::cout << "Connected to server " << ServerAddress << "\n";
+}
+
 void Game::Start(void)
 {
 	if(_gameState != Uninitialized)
 		return;
+
+	if(SERVER) {
+		RunServer();
+	} else {
+		RunClient();
+	}
 	
 	_mainWindow.Create(sf::VideoMode(SCREEN_WIDTH,SCREEN_HEIGHT,32),"Test Game");
 	
@@ -12,13 +43,17 @@ void Game::Start(void)
 
 	_mainWindow.Clear(sf::Color(0,0,0));
 
-	Player *player1 = new Player();
-	player1->SetPosition((SCREEN_WIDTH/2),(SCREEN_HEIGHT/2));
+	// Differentiate between the two players
+	Player *player = new Player(SERVER);
+	player->SetPosition((SCREEN_WIDTH/2),(SCREEN_HEIGHT/2));
+
+	Player *player1 = new Player(CLIENT);
+	player1->SetPosition((SCREEN_WIDTH/2),(SCREEN_HEIGHT/3));	
 	
-	_gameObjectManager.Add("Player",player1);
+	_gameObjectManager.Add("Player",player);
+	_gameObjectManager.Add("Player1",player1);
 
 	_gameState= Game::Playing;
-
 
 	while(!IsExiting())
 	{
@@ -47,6 +82,33 @@ const sf::Input& Game::GetInput()
 	return _mainWindow.GetInput();
 }
 
+void Game::GetServerResponse() {
+	sf::Packet Packet;
+	Player::PlayerData pd;
+
+	if(Client.Receive(Packet)) {
+		std::cout << "Receiving Error!";
+		return;
+	}
+
+	Packet >> pd.id >> pd.xPos >> pd.yPos >> pd.action;
+
+	Player * modified = (Player *)_gameObjectManager.Get(pd.id);
+	modified->MovePlayer(pd.xPos, pd.yPos);
+}
+
+void Game::ProcessClientResponse() {
+	sf::Packet Packet;
+
+	if(Server.Receive(Packet)) {
+		std::cout << "Receiving Error!";
+		return;
+	}
+
+	// Server validation would take place here, but for now, we'll cheat and simply send it back
+	Server.Send(Packet); // This should be processed by GetServerResponse on the client end.
+}
+
 void Game::GameLoop()
 {
 	sf::Event currentEvent;
@@ -57,6 +119,13 @@ void Game::GameLoop()
 	{
 		case Game::Playing:
 			{
+				// See what the server sends back as a response
+				if(CLIENT) {
+					GetServerResponse();
+				} else {
+					// Grab commands from the server object directly
+					ProcessClientResponse();
+				}
 
 				_gameObjectManager.map->Draw(_mainWindow);
 
@@ -64,6 +133,7 @@ void Game::GameLoop()
 				_gameObjectManager.DrawAll(_mainWindow);
 
 				_mainWindow.Display();
+
 				if(currentEvent.Type == sf::Event::Closed) _gameState = Game::Exiting;
 
 				if(currentEvent.Type == sf::Event::KeyPressed)
@@ -79,3 +149,5 @@ void Game::GameLoop()
 Game::GameState Game::_gameState = Uninitialized;
 sf::RenderWindow Game::_mainWindow;
 GameObjectManager Game::_gameObjectManager;
+sf::SocketTCP Game::Client;
+sf::SocketTCP Game::Server;

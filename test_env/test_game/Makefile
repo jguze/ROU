@@ -1,6 +1,6 @@
 UNAME := $(shell uname)
-LINUXLIBS := -lsfml-window -lsfml-graphics -lsfml-system
-MACLIBS := -framework sfml-window -framework sfml-graphics
+LINUXLIBS := -lsfml-window -lsfml-graphics -lsfml-system -lsfml-network
+MACLIBS := -framework sfml-window -framework sfml-graphics -framework sfml-network
 
 CXX := g++
 CXXFLAGS := -g
@@ -25,7 +25,7 @@ VisibleGameObject.o: VisibleGameObject.cpp VisibleGameObject.h
 Player.o: Player.cpp Player.h VisibleGameObject.h Map.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-Game.o: Game.cpp Game.h Player.h GameObjectManager.h Map.h
+Game.o: Game.cpp Game.h Player.h GameObjectManager.h Map.h stdafx.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 test_game.o: test_game.cpp Game.h

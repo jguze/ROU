@@ -12,8 +12,16 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
+#include <SFML/Network.hpp>
 
 #include <map>
 #include <iostream>
 #include <cassert>
 #include <cmath>
+
+#define CLIENT_IP "99.237.30.2"
+#define SERVER_IP "198.84.206.189"
+#define PORT 2044
+
+#define SERVER false
+#define CLIENT true
