@@ -82,7 +82,7 @@ void Game::GetServerResponse() {
 	sf::Packet Packet;
 	Player::PlayerData pd;
 
-	if(Client.Receive(Packet)) {
+	if(Client.Receive(Packet) != sf::Socket::Done) {
 		std::cout << "GetServerResponse";
 		return;
 	}
@@ -98,7 +98,7 @@ void Game::ProcessClientResponse() {
 	sf::Packet Outgoing;
 	Player::PlayerData pd;
 
-	if(Server.Receive(Incoming)) {
+	if(Server.Receive(Incoming) != sf::Socket::Done) {
 		std::cout << "ProcessClientResponse";
 		return;
 	}
