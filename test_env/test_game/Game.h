@@ -16,6 +16,7 @@ public:
 	const static int SCREEN_WIDTH = 640;
 	const static int SCREEN_HEIGHT = 640;
 
+	static sf::SocketTCP fromClient;
 	static sf::SocketTCP Client;
 	static sf::SocketTCP Server;
 

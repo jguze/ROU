@@ -19,8 +19,9 @@
 #include <cassert>
 #include <cmath>
 
-#define CLIENT_IP "99.237.30.2"
-#define SERVER_IP "198.84.206.189"
+#define CLIENT_IP "127.0.0.1"
+//#define SERVER_IP "198.84.206.189"
+#define SERVER_IP "127.0.0.1"
 #define PORT 2044
 
 #define SERVER true

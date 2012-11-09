@@ -9,14 +9,17 @@ void Game::RunServer() {
 
 	// Wait for connections
 	sf::IPAddress ClientAddress;
-	Server.Accept(Client, &ClientAddress);
+	Server.Accept(fromClient, &ClientAddress);
 	std::cout << "Client connected: " << ClientAddress << "\n";
 }
 
 void Game::RunClient() {
 	sf::IPAddress ServerAddress = sf::IPAddress(SERVER_IP);
-	if(!Client.Connect(PORT, ServerAddress))
+	if(!Client.Connect(PORT, ServerAddress)) {
+		std::cout << "Cannot connect to server.";
+		std::cout.flush();
 		return;
+	}
 
 	std::cout << "Connected to server " << ServerAddress << "\n";
 }
@@ -164,4 +167,5 @@ Game::GameState Game::_gameState = Uninitialized;
 sf::RenderWindow Game::_mainWindow;
 GameObjectManager Game::_gameObjectManager;
 sf::SocketTCP Game::Client;
+sf::SocketTCP Game::fromClient;
 sf::SocketTCP Game::Server;
