@@ -55,7 +55,7 @@ void Game::Start(bool server)
 
 	while(!IsExiting())
 	{
-		GameLoop();
+		GameLoop(server);
 	}
 
 	_mainWindow.Close();
@@ -126,7 +126,7 @@ void Game::ProcessClientResponse() {
 	Server.Send(Outgoing); // This should be processed by GetServerResponse on the client end.
 }
 
-void Game::GameLoop()
+void Game::GameLoop(bool server)
 {
 	sf::Event currentEvent;
 	_mainWindow.GetEvent(currentEvent);
@@ -137,7 +137,7 @@ void Game::GameLoop()
 		case Game::Playing:
 			{
 				// See what the server sends back as a response
-				if(CLIENT) {
+				if(!server) {
 					GetServerResponse();
 				} else {
 					// Grab commands from the server object directly

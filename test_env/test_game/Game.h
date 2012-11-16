@@ -22,7 +22,7 @@ public:
 
 private:
 	static bool IsExiting();
-	static void GameLoop();
+	static void GameLoop(bool server);
 
 	static void GetServerResponse();
 	static void ProcessClientResponse();
