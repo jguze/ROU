@@ -24,12 +24,12 @@ void Game::RunClient() {
 	std::cout << "Connected to server " << ServerAddress << "\n";
 }
 
-void Game::Start(void)
+void Game::Start(bool server)
 {
 	if(_gameState != Uninitialized)
 		return;
 
-	if(SERVER) {
+	if(server) {
 		RunServer();
 	} else {
 		RunClient();
@@ -42,10 +42,10 @@ void Game::Start(void)
 	_mainWindow.Clear(sf::Color(0,0,0));
 
 	// Differentiate between the two players
-	Player *player = new Player(SERVER);
+	Player *player = new Player(server);
 	player->SetPosition((SCREEN_WIDTH/2),(SCREEN_HEIGHT/2));
 
-	Player *player1 = new Player(CLIENT);
+	Player *player1 = new Player(!server);
 	player1->SetPosition((SCREEN_WIDTH/2),(SCREEN_HEIGHT/3));	
 	
 	_gameObjectManager.Add("Server",player);

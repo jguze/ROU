@@ -22,7 +22,7 @@
 #define CLIENT_IP "127.0.0.1"
 //#define SERVER_IP "198.84.206.189"
 #define SERVER_IP "127.0.0.1"
-#define PORT 2044
+#define PORT 49094
 
 #define SERVER true
 #define CLIENT false

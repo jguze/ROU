@@ -10,7 +10,7 @@ class Game
 
 public:
 
-	static void Start();
+	static void Start(bool server);
 	static sf::RenderWindow& GetWindow();
 	const static sf::Input& GetInput();
 	const static int SCREEN_WIDTH = 640;
