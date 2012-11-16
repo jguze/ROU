@@ -48,8 +48,8 @@ void Game::Start(bool server)
 	Player *player1 = new Player(!server);
 	player1->SetPosition((SCREEN_WIDTH/2),(SCREEN_HEIGHT/3));	
 	
-	_gameObjectManager.Add("Server",player);
-	_gameObjectManager.Add("Client",player1);
+	_gameObjectManager.Add(SERVER_PLAYER,player);
+	_gameObjectManager.Add(CLIENT_PLAYER,player1);
 
 	_gameState= Game::Playing;
 
@@ -111,11 +111,11 @@ void Game::ProcessClientResponse() {
 	Player * modified = (Player *)_gameObjectManager.Get(pd.id);
 	modified->MovePlayer(pd.xPos, pd.yPos);
 
-	Player * serverPlayer = (Player*)_gameObjectManager.Get("Server");
+	Player * serverPlayer = (Player*)_gameObjectManager.Get(SERVER_PLAYER);
 
 	sf::Vector2f pos = serverPlayer->GetPosition();
 
-	pd.id = "Server";
+	pd.id = SERVER_PLAYER;
 	pd.xPos = pos.x;
 	pd.yPos = pos.y;
 	pd.action = 0;

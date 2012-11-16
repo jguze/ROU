@@ -24,5 +24,8 @@
 #define SERVER_IP "99.237.30.2"
 #define PORT 49094
 
-#define SERVER true
-#define CLIENT false
+#define SERVER false
+#define CLIENT true
+
+#define SERVER_PLAYER 0
+#define CLIENT_PLAYER 1

@@ -12,14 +12,14 @@ GameObjectManager::~GameObjectManager()
 	std::for_each(_gameObjects.begin(),_gameObjects.end(),GameObjectDeallocator());
 }
 
-void GameObjectManager::Add(std::string name, VisibleGameObject* gameObject)
+void GameObjectManager::Add(int id, VisibleGameObject* gameObject)
 {
-	_gameObjects.insert(std::pair<std::string,VisibleGameObject*>(name,gameObject));
+	_gameObjects.insert(std::pair<int,VisibleGameObject*>(id,gameObject));
 }
 
-void GameObjectManager::Remove(std::string name)
+void GameObjectManager::Remove(int id)
 {
-	std::map<std::string, VisibleGameObject*>::iterator results = _gameObjects.find(name);
+	std::map<int, VisibleGameObject*>::iterator results = _gameObjects.find(id);
 	if(results != _gameObjects.end() )
 	{
 		delete results->second;
@@ -27,9 +27,9 @@ void GameObjectManager::Remove(std::string name)
 	}
 }
 
-VisibleGameObject* GameObjectManager::Get(std::string name) const
+VisibleGameObject* GameObjectManager::Get(int id) const
 {
-	std::map<std::string, VisibleGameObject*>::const_iterator results = _gameObjects.find(name);
+	std::map<int, VisibleGameObject*>::const_iterator results = _gameObjects.find(id);
 	if(results == _gameObjects.end() )
 		return NULL;
 	return results->second;
@@ -45,7 +45,7 @@ int GameObjectManager::GetObjectCount() const
 void GameObjectManager::DrawAll(sf::RenderWindow& renderWindow)
 {
 
-	std::map<std::string,VisibleGameObject*>::const_iterator itr = _gameObjects.begin();
+	std::map<int,VisibleGameObject*>::const_iterator itr = _gameObjects.begin();
 	while(itr != _gameObjects.end())
 	{
 		itr->second->Draw(renderWindow);
@@ -55,7 +55,7 @@ void GameObjectManager::DrawAll(sf::RenderWindow& renderWindow)
 
 void GameObjectManager::UpdateAll()
 {
-	std::map<std::string,VisibleGameObject*>::const_iterator itr = _gameObjects.begin();
+	std::map<int,VisibleGameObject*>::const_iterator itr = _gameObjects.begin();
 	float timeDelta = Game::GetWindow().GetFrameTime();
 
 	while(itr != _gameObjects.end())

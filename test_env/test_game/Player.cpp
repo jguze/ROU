@@ -275,7 +275,7 @@ void Player::Update(float elapsedTime, Map * map)
 		data.action = 0;
 
 		if(CLIENT) {
-			data.id = "Client"; // TODO don't hard code this shit
+			data.id = CLIENT_PLAYER; // TODO don't hard code this shit
 			SendNetworkRequest(data);
 		}	
 	}

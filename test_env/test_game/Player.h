@@ -25,7 +25,7 @@ public:
 
     struct PlayerData {
 
-        std::string id;
+        int id;
 
         float xPos;
         float yPos;

@@ -9,10 +9,10 @@ public:
 	GameObjectManager();
 	~GameObjectManager();
 
-	void Add(std::string name, VisibleGameObject* gameObject);
-	void Remove(std::string name);
+	void Add(int id, VisibleGameObject* gameObject);
+	void Remove(int id);
 	int GetObjectCount() const;
-	VisibleGameObject* Get(std::string name) const;
+	VisibleGameObject* Get(int id) const;
 
 	void DrawAll(sf::RenderWindow& renderWindow);
 	void UpdateAll();
@@ -20,11 +20,11 @@ public:
 	Map *map;
 
 private:
-	std::map<std::string, VisibleGameObject*> _gameObjects;
+	std::map<int, VisibleGameObject*> _gameObjects;
 
 	struct GameObjectDeallocator
 	{
-		void operator()(const std::pair<std::string,VisibleGameObject*> & p) const
+		void operator()(const std::pair<int,VisibleGameObject*> & p) const
 		{
 			delete p.second;
 		}
