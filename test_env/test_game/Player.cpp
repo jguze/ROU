@@ -37,21 +37,18 @@ void Player::Draw(sf::RenderWindow & rw)
 }
 
 void Player::MovePlayer(float x, float y) {
-	GetSprite().Move(x, y);
+	GetSprite().SetPosition(x, y);
 }
 
 void Player::SendNetworkRequest(PlayerData pd) {
-	sf::IPAddress ServerAddress = sf::IPAddress(SERVER_IP);
-	if(!Game::Client.Connect(PORT, ServerAddress)) {
-		std::cout << "SendNetworkRequest";
-		return;
-	}
+
+	//std::cout << "SendNetworkRequest";
 
 	sf::Packet Packet;
 
 	Packet << pd;
 	Game::Client.Send(Packet);
-	std::cout << "\nPlayer: " << pd.id << " xPos: " << pd.xPos << " yPos: " << pd.yPos << " action: " << pd.action << "\n";
+	//std::cout << "\nPlayer: " << pd.id << " xPos: " << pd.xPos << " yPos: " << pd.yPos << " action: " << pd.action << "\n";
 }
 
 

@@ -2,6 +2,9 @@
 #include "Game.h"
 
 void Game::RunServer() {
+
+	fromClient.SetBlocking(false);
+
 	if(!Server.Listen(PORT))
 		return;
 
@@ -14,8 +17,11 @@ void Game::RunServer() {
 }
 
 void Game::RunClient() {
+
+	Client.SetBlocking(false);
+
 	sf::IPAddress ServerAddress = sf::IPAddress(SERVER_IP);
-	if(!Client.Connect(PORT, ServerAddress)) {
+	if(Client.Connect(PORT, ServerAddress) != sf::Socket::Done) {
 		std::cout << "Cannot connect to server.";
 		std::cout.flush();
 		return;
@@ -84,8 +90,10 @@ void Game::GetServerResponse() {
 	sf::Packet Packet;
 	Player::PlayerData pd;
 
+	//std::cout << "In GetServer Response" << "\n";
+
 	if(Client.Receive(Packet) != sf::Socket::Done) {
-		std::cout << "GetServerResponse";
+		//std::cout << "GetServerResponse";
 		return;
 	}
 
@@ -100,8 +108,10 @@ void Game::ProcessClientResponse() {
 	sf::Packet Outgoing;
 	Player::PlayerData pd;
 
-	if(Server.Receive(Incoming) != sf::Socket::Done) {
-		std::cout << "ProcessClientResponse";
+	//std::cout << "In ProcessClientResponse Response" << "\n";
+
+	if(fromClient.Receive(Incoming) != sf::Socket::Done) {
+		//std::cout << "ProcessClientResponse";
 		return;
 	}
 
@@ -123,7 +133,7 @@ void Game::ProcessClientResponse() {
 	Outgoing << pd.id << pd.xPos << pd.yPos << pd.action;
 
 	// Server validation would take place here, but for now, we'll cheat and simply send it back
-	Server.Send(Outgoing); // This should be processed by GetServerResponse on the client end.
+	fromClient.Send(Outgoing); // This should be processed by GetServerResponse on the client end.
 }
 
 void Game::GameLoop(bool server)
