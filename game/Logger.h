@@ -1,39 +1,35 @@
 
 
 #pragma once
-#include <stdio.h>
-#include <string>
-
+#include <iostream>
 class Logger
 {
 public:
 
-	static void LogError(string msg)
+	static void LogError(std::string msg)
 	{
-		Filler(msg);
+		Filler("[ERROR]" + msg);
 	}
 
-	static void LogWarn(string msg)
+	static void LogWarning(std::string msg)
 	{
-		Filler(msg);
+		Filler("[WARNING]" + msg);
 	}
 
-	static void LogDebug(string msg)
+	static void LogDebug(std::string msg)
 	{
-		Filler(msg);
+		Filler("[DEBUG]" + msg);
 	}
 
-	static void LogInfo(string msg)
+	static void LogInfo(std::string msg)
 	{
-		Filler(msg);
+		Filler("[INFO]" + msg);
 	}
 
-	static void Filler(string msg)
+	static void Filler(std::string msg)
 	{
 		std::cout << msg;
 		std::cout.flush();
 
 	}
-
-
 };
