@@ -10,4 +10,6 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 
+#include "Logger.h"
+
 #define PORT 49094

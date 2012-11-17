@@ -1,7 +1,9 @@
 #include "Server.h"
 
 Server::Server() {
-	if(!listener.Listen(PORT)){}
+	if(!listener.Listen(PORT)){
+		Logger::LogError("Cannot listen to port.");
+	}
 
 	selector.Add(listener);
 	RunServer();
@@ -19,6 +21,7 @@ void Server::RunServer() {
 			sf::IPAddress address;
 			sf::SocketTCP client;
 			listener.Accept(client, &address);
+			Logger::LogInfo("Client connected.");
 
 			selector.Add(client); // Add new client to selector
 		} else {
