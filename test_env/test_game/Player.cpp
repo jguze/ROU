@@ -267,6 +267,8 @@ void Player::Update(float elapsedTime, Map * map)
 			GetSprite().Move(finXDist, finYDist);
 		}
 
+		pos = this->GetPosition();
+
 		data.xPos = pos.x;
 		data.yPos = pos.y;
 		data.action = 0;
