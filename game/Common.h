@@ -13,3 +13,4 @@
 #include "Logger.h"
 
 #define PORT 49094
+#define SERVER_IP "127.0.0.1"

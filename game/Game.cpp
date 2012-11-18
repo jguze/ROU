@@ -3,8 +3,9 @@
 
 int main(int argc, char *argv[])
 {
-	if((argc > 1 && *argv[1] == 'c'))
+	if((argc > 1 && *argv[1] == 'c')) {
 		Client * client = new Client();
-	else
+	} else {
 		Server * server = new Server();
+	}
 }

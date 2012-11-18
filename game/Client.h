@@ -19,11 +19,14 @@ public:
 
 	Client();
 	bool Initialize();
+	bool ConnectToServer();
 
 private:
 	enum ClientState { Unitialized, Active, Exiting};
 	ClientState _state;
 
 	UserInputWindow * _uiw;
+
+	sf::SocketTCP client;
 
 };

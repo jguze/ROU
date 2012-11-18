@@ -5,6 +5,8 @@ Server::Server() {
 		Logger::LogError("Cannot listen to port.");
 	}
 
+	Logger::LogInfo("Server is waiting for connections");
+
 	selector.Add(listener);
 	RunServer();
 }
