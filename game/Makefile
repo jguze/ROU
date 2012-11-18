@@ -19,7 +19,7 @@ Server.o: Server.cpp Server.h
 Game.o: Game.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@ 	
 
-game: Game.o Server.o Client.o UserinputWindow.o
+game: Game.o Server.o Client.o UserInputWindow.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LIBS)
 
 UserInputWindow.o: UserInputWindow.cpp UserInputWindow.h
