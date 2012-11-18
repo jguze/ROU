@@ -19,7 +19,16 @@ Server.o: Server.cpp Server.h
 Game.o: Game.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@ 	
 
-game: Game.o Server.o Client.o UserinputWindow.o
+Renderer.o: Renderer.cpp Renderer.h	
+	$(CXX) $(CXXFLAGS) -c $^ -o $@ 	
+
+GameObject.o: GameObject.cpp GameObject.h
+	$(CXX) $(CXXFLAGS) -c $^ -o $@
+
+GameObjectManager.o: GameObjectManager.cpp GameObjectManager.h
+	$(CXX) $(CXXFLAGS) -c $^ -o $@ 	
+
+game: Game.o Server.o Client.o GameObjectManager.o Renderer.o GameObject.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LIBS)
 
 UserInputWindow.o: UserInputWindow.cpp UserInputWindow.h

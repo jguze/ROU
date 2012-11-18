@@ -8,22 +8,28 @@ manager.
 
 
 */
-
-
 #pragma once
+#include "Common.h"
 #include "UserInputWindow.h"
+#include "Renderer.h"
 
 class Client
 {
 public:
-
 	Client();
 	bool Initialize();
-
+	// cameraView will be 2 floats representing the top
+	// left corner of the window. This will be fed to the
+	// renderer
+	void GameLoop();
+	Position cameraView();
+	void ProcessEvent(const sf::Event & event);
+	bool isRunning;
 private:
 	enum ClientState { Unitialized, Active, Exiting};
 	ClientState _state;
-
-	UserInputWindow * _uiw;
-
+	Renderer * _renderer;
+	UserInputWindow * window;
+	// Move player out of here for later
+	GameObject* _player;
 };

@@ -12,8 +12,7 @@ It uses the SFML Render Window as its base.
 
 
 #pragma once
-#include "SFML/Window.hpp"
-#include "SFML/Graphics.hpp"
+#include "Common.h"
 
 class UserInputWindow
 {
@@ -21,16 +20,8 @@ class UserInputWindow
 public: 
 
 	UserInputWindow();
-
-	static sf::RenderWindow& GetWindow();
-
-	const static int SCREEN_WIDTH = 512;
-	const static int SCREEN_HEIGHT = 512;
-
 	bool Initialize();
+	sf::RenderWindow renderWindow;
 
 private:
-
-	sf::RenderWindow _window;
-
 };
