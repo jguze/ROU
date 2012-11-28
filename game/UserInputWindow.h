@@ -22,15 +22,18 @@ public:
 
 	UserInputWindow();
 
-	static sf::RenderWindow& GetWindow();
+
+	void ProcessUserInput();
 
 	const static int SCREEN_WIDTH = 512;
 	const static int SCREEN_HEIGHT = 512;
 
-	bool Initialize();
-
+	
+	bool UpdateView();
+	friend class RenderEngine;
 private:
 
+	bool Initialize();
 	sf::RenderWindow _window;
-
+	int cam_x;
 };

@@ -34,5 +34,30 @@ bool Client::Initialize()
 
 	ConnectToServer();
 	_uiw = new UserInputWindow();
+	_state = Active;
 	return true;
 }
+
+void Client::Run()
+{
+	Logger::LogInfo("Client has stated.");
+	while(_state == Active)
+	{
+		//Handle User Input
+
+		//Send Shit to the Server
+
+		//Receive Shit from Server
+
+		//Update My View
+		_uiw->Update();
+
+	}
+}
+
+
+
+
+
+
+

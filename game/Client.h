@@ -16,10 +16,14 @@ manager.
 class Client
 {
 public:
-
+	//Constructor
 	Client();
+	//Initialize the state of the client
 	bool Initialize();
+	//Initialize Connection to Server
 	bool ConnectToServer();
+	//Main Game Loop
+	void Run();
 
 private:
 	enum ClientState { Unitialized, Active, Exiting};
@@ -28,5 +32,6 @@ private:
 	UserInputWindow * _uiw;
 
 	sf::SocketTCP client;
+
 
 };
